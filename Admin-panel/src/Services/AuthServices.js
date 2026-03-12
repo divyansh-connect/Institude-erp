@@ -1,0 +1,31 @@
+import { apiFetch } from "./api";
+
+export const getLoggedVerify = async (token) => {
+  try {
+    const verify = await apiFetch(`http://localhost:3000/api/auth/verify`);
+    return verify;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const postAuthLogin = async (payload) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Login failed");
+    }
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -1,0 +1,181 @@
+  
+h1{
+  font-size: 2rem;
+}
+h2{
+  font-size: 1.5rem;
+}
+h3{
+  font-size: 1.2rem;
+}
+p, li{
+    font-size: 1rem;
+}
+section {
+  scroll-margin-top: 70px;
+}
+
+.custom-nav .nav-link {
+  font-weight: 600;          /* Thoda bold */
+  color: rgba(255, 255, 255, 0.85); 
+  transition: all 0.3s ease;
+}
+
+/* Hover Effect */
+.custom-nav .nav-link:hover {
+  font-size: 17px;
+  padding: 6px;
+  color: #ffffff; /* Pure white on hover */
+  transform: translateY(-1px);
+}
+
+/* Active Link */
+/* .custom-nav .nav-link.active {
+  font-weight: 700;
+  color: #ffffff !important;
+} */
+
+.carousel{
+height: 70vh;
+}
+.carousel-inner, .carousel-item{
+  height: 100%;
+}
+.carousel-overlay{
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.1)
+  );
+}
+.carousel-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.facilities-img img{
+  height: 80%;
+}
+.study-materials-section {
+height: 90vh;
+}
+
+/* Only UL scroll */
+.materials-list-scroll {
+  max-height: 200px;     
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+  /* Section fixed height */
+.announcements-section {
+  height: 90vh;
+  overflow: hidden;   /* prevent outer scroll */
+}
+
+/* Inner scroll area */
+.announcements-scroll-area {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+}
+
+/* Admission Section */
+.Admissions-Section{
+  min-height: 99vh;
+  background-image: url(./assets/College.jpg);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* Colour  */
+
+.bg-materials-colour{
+  background-color:#dbe4f9;
+}
+.bg-materials-li{
+  background-color:#e4eaf9;
+}
+
+.bg-style{
+  background: radial-gradient(circle at 1px 1px, #eaeaea 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.bg-announcements{
+  background: #eaf4fc;
+}
+
+.bg-announcements-li{
+  background: #074173;
+  color: #fff;
+}
+
+.text-colour{
+  color: #A82323;
+}
+.text-subtitle{
+  color: #FCB53B;
+}
+.study-materials-left{
+  background-image: url("./assets/studyMaterial.jpg");
+  background-size: cover;
+  border-top-left-radius : 12px;
+  border-bottom-left-radius : 12px;
+}
+
+.bg-announcements-img{
+  background-image: url("./assets/Announcements.jpg");
+  background-size: cover;
+}
+
+@media (max-width: 767px) {
+
+/* -------- Study Materials CSS -------- */
+.materials-dca-div{
+  padding: 0px 10px;
+}
+.dca-span button {
+  padding: 3px 3px;
+  width: 40px;
+}
+.materials-dca-div ul li{
+  padding: 5px 10px;
+}
+.materials-pgdca-div{
+  padding: 0px 10px;
+}
+.pgdca-span button {
+  padding: 3px 3px;
+  width: 40px;
+}
+.materials-pgdca-div ul li{
+  padding: 5px 10px;
+}
+}
+
+@media (max-width: 991px) {
+.facilities-div{
+  padding: 4px;
+}
+
+.study-materials-div{
+  flex-direction: column;
+}
+.study-materials-left{
+  background-image: url("./assets/studyMaterial.jpg");
+  background-size: cover;
+  border-top-left-radius : 12px;
+  border-top-right-radius : 12px;
+  border-bottom-left-radius : 0px;
+
+}
+
+}
+  
+ 
