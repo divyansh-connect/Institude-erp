@@ -30,8 +30,8 @@ const StdAdmission = () => {
 
   const handleFileChange = (e) => {
     e.preventDefault();
+    setIsUploading(true);
     try {
-      setIsUploading(true);
       const file = e.target.files[0];
       setErrShow({ stdPhoto: "" });
 
@@ -63,8 +63,8 @@ const StdAdmission = () => {
         if (response) {
           setPreview(response.uploadUrl);
         }
+        setIsUploading(false);
       };
-      setIsUploading(false);
     } catch (error) {
       setErrShow({
         stdPhoto: error.message || "Server Error",

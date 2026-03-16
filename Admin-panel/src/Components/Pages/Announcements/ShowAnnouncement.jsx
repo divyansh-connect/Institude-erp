@@ -6,12 +6,14 @@ import {
 } from "../../../Services/InstitudeServices";
 import { useState } from "react";
 
-const ShowAnnouncement = ({ refresh, setRefresh }) => {
+const ShowAnnouncement = ({ refresh, setRefresh, setLoading }) => {
   const [fetch, setFetch] = useState("");
+
   const [announcementList, setAnnouncementList] = useState([]);
   useEffect(() => {
     getinstituteAnnouncement()
       .then((lists) => {
+        setLoading(false);
         setAnnouncementList(lists.data);
       })
       .catch((error) => {

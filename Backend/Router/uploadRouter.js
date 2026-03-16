@@ -4,13 +4,19 @@ const uploadController = require("../Controller/uploadController");
 const authMiddleware = require("../Middleware/authMiddleware");
 const uploadRouter = express.Router();
 
-const upload = multer({ dest: "uploads/" });
+const uploadImage = multer({ dest: "uploads/" });
+const uploadPdf = multer({ dest: "uploadsTest/" });
 
 uploadRouter.use(authMiddleware);
 uploadRouter.post(
   "/stdAdmPhoto",
-  upload.single("stdAdmPhoto"),
+  uploadImage.single("stdAdmPhoto"),
   uploadController.postStdAdmPhoto,
+);
+uploadRouter.post(
+  "/stdyMaterialFile",
+  uploadPdf.single("stdyMaterialFile"),
+  uploadController.postStdyMaterialFile,
 );
 
 module.exports = uploadRouter;

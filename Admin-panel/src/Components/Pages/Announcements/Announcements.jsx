@@ -2,9 +2,12 @@ import React from "react";
 import AddAnnouncement from "./AddAnnouncement";
 import ShowAnnouncement from "./ShowAnnouncement";
 import { useState } from "react";
+import AnnouncementsSkeleton from "../Skeleton/AnnouncementsSkeleton";
 
 const Announcements = () => {
   const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   return (
     <>
       <h3 className="mb-3">Manage Announcements</h3>
@@ -13,7 +16,13 @@ const Announcements = () => {
           <AddAnnouncement setRefresh={setRefresh} />
         </div>
         <div className="col-12 ">
-          <ShowAnnouncement refresh={refresh} setRefresh={setRefresh} />
+          {loading && <AnnouncementsSkeleton />}
+
+          <ShowAnnouncement
+            setLoading={setLoading}
+            refresh={refresh}
+            setRefresh={setRefresh}
+          />
         </div>
       </div>
     </>

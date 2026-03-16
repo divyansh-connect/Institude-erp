@@ -23,3 +23,33 @@ export const stdAdmUpload = async (uploadFile) => {
     throw error;
   }
 };
+
+export const uploadStudyMaterialFile = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("stdyMaterialFile", file);
+    console.log(file);
+
+    const uploaded = await apiFetch(
+      "http://localhost:3000/api/upload/stdyMaterialFile",
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+    const data = uploaded.json();
+    if (!uploaded.ok) {
+      return {
+        success: false,
+        message: error.message || "Failed to upload file",
+      };
+    }
+    return data.url;
+  } catch (error) {
+    if (error.message === "Unauthorized") throw error;
+    return {
+      success: false,
+      message: error.message || "Server failed",
+    };
+  }
+};

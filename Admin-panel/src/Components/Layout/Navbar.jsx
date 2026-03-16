@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ toggleSidebar }) => {
+  const navigate = useNavigate();
   return (
     <nav className="navbar navbar-light bg-white shadow-sm px-4">
       {/* Toggle Button (Mobile Only) */}
@@ -15,7 +17,15 @@ const Navbar = ({ toggleSidebar }) => {
 
       <div>
         <span className="me-3">Admin</span>
-        <button className="btn btn-sm btn-outline-danger">Logout</button>
+        <button
+          className="btn btn-sm btn-outline-danger"
+          onClick={() => {
+            localStorage.removeItem("token");
+            navigate("/auth/login");
+          }}
+        >
+          Logout
+        </button>
       </div>
     </nav>
   );

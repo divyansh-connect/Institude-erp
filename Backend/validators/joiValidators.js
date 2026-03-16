@@ -49,3 +49,11 @@ exports.announcementValidator = joi.object({
   title: joi.string().trim().required(),
   message: joi.string().trim().required(),
 });
+
+exports.stdFeePay = joi.object({
+  studentId: joi.string().trim().required(),
+  amount: joi.number().min(1).required(),
+  feeType: joi.string().trim().required(),
+  note: joi.string().trim().allow(""),
+  method: joi.string().trim().valid("Cash", "UPI"),
+});

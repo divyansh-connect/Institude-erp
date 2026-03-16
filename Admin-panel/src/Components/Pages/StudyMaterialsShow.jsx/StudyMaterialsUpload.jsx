@@ -1,5 +1,6 @@
-import React, { use, useState } from "react";
-import { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { uploadStudyMaterial } from "../../../Services/InstitudeServices";
+import { uploadStudyMaterialFile } from "../../../Services/uploadServices";
 
 const StudyMaterialsUpload = ({ uploadMaterials, setUploadMaterials }) => {
   const studyCourses = useRef();
@@ -9,19 +10,18 @@ const StudyMaterialsUpload = ({ uploadMaterials, setUploadMaterials }) => {
   const [validator, setValidator] = useState({
     title: "",
     upload: "",
+    error: "",
   });
 
-  let error = {};
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const error = {};
     const demoImput = uploadInput;
     const courses = studyCourses.current.value;
     const title = studyTitle.current.value.trim();
     const upload = studyFile.current.files[0];
-    console.log(title, upload);
-
     if (!upload) {
-      error.upload = "select pdf";
+      error.upload = "Pdf required";
     }
     if (!demoImput) {
       error.upload = "First upload pdf";
@@ -31,27 +31,63 @@ const StudyMaterialsUpload = ({ uploadMaterials, setUploadMaterials }) => {
     }
     setValidator(error);
     if (Object.keys(error).length === 0) {
-      setUploadMaterials([
-        {
-          course: courses,
-          title: title,
-          date: Date.now(),
-          file: upload,
-        },
-        ...uploadMaterials,
-      ]);
-      studyCourses.current.selectedIndex = 0;
-      studyTitle.current.value = "";
-      studyFile.current.value = "";
-      setUploadInput("");
+      try {
+        // const maxSize = 5 * 1024 * 1024;
+        // if (upload.size > maxSize) {
+        //   studyFile.current.value = "";
+        //   return setValidator({ upload: "Pdf size must be less than 5 MB" });
+        // }
+        const fileResponse = await uploadStudyMaterialFile(upload);
+        if (!fileResponse.success) {
+          return setValidator({
+            error: fileResponse.message || "Failed to upload pdf file",
+          });
+        }
+      } catch (error) {
+        if (error.message === "Unauthorized") return;
+        return setValidator({
+          error: error.message || "Server Faild",
+        });
+      }
+
+      const payload = {
+        courses: courses,
+        title: title,
+        upload: upload,
+      };
+
+      try {
+        const response = await uploadStudyMaterial(payload);
+        if (!response.success) {
+          return setValidator({
+            error: response.message || "Study material upload failed",
+          });
+        }
+        studyCourses.current.selectedIndex = 0;
+        studyTitle.current.value = "";
+        studyFile.current.value = "";
+        setValidator({ title: "", upload: "", error: "" });
+        setUploadInput("");
+      } catch (error) {
+        if (error.message === "Unauthorized") return;
+        return setValidator({
+          error: "Server error",
+        });
+      }
     }
   };
 
   return (
     <div className="mt-4 mb-3">
       <div className="card shadow p-3 form-card">
-        <h3 className="text-center mb-4">Upload Study Materials</h3>
-
+        <div className="mb-4">
+          <h3 className="text-center ">Upload Study Materials</h3>
+          {validator.error && (
+            <div className="mx-2 text-danger text-center small">
+              {validator.error}
+            </div>
+          )}
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="row align-items-end">
             {/* Course */}
@@ -97,7 +133,10 @@ const StudyMaterialsUpload = ({ uploadMaterials, setUploadMaterials }) => {
                   type="file"
                   ref={studyFile}
                   style={{ display: "none" }}
-                  onChange={(e) => setUploadInput(e.target.value)}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) setUploadInput(file.name);
+                  }}
                 />
                 <button
                   type="button"

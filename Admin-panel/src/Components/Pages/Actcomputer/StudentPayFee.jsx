@@ -2,21 +2,62 @@ import React from "react";
 import { useState } from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { payStdFee } from "../../../Services/InstitudeServices";
 
-const StudentPayFee = ({ setPayFee }) => {
+const StudentPayFee = ({ setPayFee, student, setFeeRecipt }) => {
   const navigate = useNavigate();
   const [amount, setAmount] = useState("");
   const [feeType, setFeeType] = useState("");
-  const [method, setMethod] = useState("Cash");
+  const [method, setMethod] = useState("");
   const [customFee, setCustomFee] = useState("");
-
-  const [saving, setSaving] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [showCustom, setShowCustom] = useState(false);
-  const [valueError, setValueError] = useState({
-    amount: "",
-    paymentStatus: "",
-  });
+  const [valueError, setValueError] = useState({});
 
+  const handlePayfee = async (e, id) => {
+    e.preventDefault();
+    setIsSaving(true);
+    const err = {};
+    if (!amount) {
+      err.amount = "Enter amount";
+    }
+    if (!feeType) {
+      err.feeType = "Enter fee type";
+    }
+    if (feeType === "other" && !customFee) {
+      err.customFee = "Enter fee title";
+    }
+    if (!method) {
+      err.method = "Select payment method";
+    }
+    setValueError(err);
+    if (Object.keys(err).length > 0) {
+      return setIsSaving(false);
+    }
+    const payload = {
+      studentId: id,
+      feeType,
+      amount: Number(amount),
+      method,
+    };
+    if (feeType === "other") {
+      payload.note = customFee;
+    }
+    try {
+      const response = await payStdFee(payload);
+      if (!response.success) {
+        setValueError({ errPay: response.message || "Payment Failed" });
+      }
+      setPayFee(false);
+      setFeeRecipt({
+        success: response.success,
+        data: response.data,
+      });
+    } catch (error) {
+      if (error.message === "Unauthorized") return;
+      setValueError({ errPay: error.message || "Server Failed" });
+    }
+  };
   return (
     <>
       <div className="overlay"></div>
@@ -49,11 +90,18 @@ const StudentPayFee = ({ setPayFee }) => {
 
             {/* Body */}
             <div className="modal-body">
+              {valueError.errPay && (
+                <div className="ms-2 text-danger text-center">
+                  {valueError.errPay}
+                </div>
+              )}
+
               {/* Student Info */}
               <div className="mb-3">
-                <div className="fw-semibold">Student Name</div>
+                <div className="fw-semibold">{student.stdName}</div>
                 <div className="text-muted small">
-                  student course (student course Full Name)
+                  {student.courseId.courseName} (
+                  {student.courseId.courseFullName})
                 </div>
               </div>
 
@@ -76,11 +124,15 @@ const StudentPayFee = ({ setPayFee }) => {
               </div>
 
               {/* Form */}
-              <form>
+              <form onSubmit={(e) => handlePayfee(e, student._id)}>
                 {/* Fee Type */}
                 <div className="mb-3">
-                  <label className="form-label">Fee Type</label>
-
+                  <label className="form-label">Fee Type*</label>
+                  {valueError.feeType && (
+                    <span className="ms-2 text-danger small">
+                      {valueError.feeType}
+                    </span>
+                  )}
                   <select
                     className="form-select"
                     value={feeType}
@@ -102,12 +154,19 @@ const StudentPayFee = ({ setPayFee }) => {
 
                 {showCustom && (
                   <div className="mb-3">
-                    <label className="form-label">Fee Title</label>
+                    <label className="form-label">Fee Title*</label>
+                    {valueError.customFee && (
+                      <span className="ms-2 text-danger small">
+                        {valueError.customFee}
+                      </span>
+                    )}
+
                     <input
                       type="text"
                       className="form-control"
                       placeholder="Enter custom fee title (e.g.  Fine)"
                       value={customFee}
+                      onChange={(e) => setCustomFee(e.target.value)}
                     />
                   </div>
                 )}
@@ -116,19 +175,34 @@ const StudentPayFee = ({ setPayFee }) => {
 
                 {/* Amount */}
                 <div className="mb-3">
-                  <label className="form-label">Amount</label>
+                  <label className="form-label">Amount* </label>
+                  {valueError.amount && (
+                    <span className="ms-2 text-danger small">
+                      {valueError.amount}
+                    </span>
+                  )}
                   <input
                     type="number"
                     className="form-control"
                     placeholder="Enter amount"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-"].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 </div>
 
                 {/* Payment Method */}
                 <div className="mb-3">
                   <label className="form-label">Payment Method</label>
+                  {valueError.method && (
+                    <span className="ms-2 text-danger small">
+                      {valueError.method}
+                    </span>
+                  )}
                   <select
                     className="form-select"
                     value={method}

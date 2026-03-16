@@ -11,6 +11,7 @@ const uploadRouter = require("./Router/uploadRouter");
 const courseRouter = require("./Router/courseRouter");
 const institudeRouter = require("./Router/institudeRouter");
 const announcementRouter = require("./Router/announcementRouter");
+const stdyMatarialRouter = require("./Router/stdyMatarialRouter");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 
 app.use("/api/course", courseRouter);
 app.use("/api/announcement", announcementRouter);
+app.use("/api/stdyMaterialFile", stdyMatarialRouter);
 app.use("/api/institude", institudeRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/auth", authRouter);

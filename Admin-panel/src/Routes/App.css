@@ -136,6 +136,12 @@
   height: 300px;
   overflow-y: auto;
 }
+
+.students-scroll{
+  height: 70vh; 
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 /* Mobile */
 @media (max-width: 767px) {
   .sidebar {

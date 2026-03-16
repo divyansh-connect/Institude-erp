@@ -1,4 +1,6 @@
 const InstitudeStudents = require("../Model/institudeStudents");
+const Payments = require("../Model/payment");
+
 exports.postInstitudeAdmForm = async (req, res, next) => {
   try {
     const save = await InstitudeStudents.create({
@@ -37,6 +39,41 @@ exports.postInstitudeAdmForm = async (req, res, next) => {
         message: "Aadhar number already exists",
       });
     }
+    next(error);
+  }
+};
+
+exports.getAllStudents = async (req, res, next) => {
+  try {
+    const stdLists = await InstitudeStudents.find().populate("courseId");
+    res.status(200).json({
+      success: true,
+      message: "All students fetched",
+      data: stdLists,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.postPayFee = async (req, res, next) => {
+  const { studentId, feeType, amount, note, method } = req.body;
+
+  try {
+    const save = await Payments.create({
+      studentId,
+      amount,
+      feeType,
+      note,
+      paymentMethod: method,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Student fee submitted sucessfully",
+      data: save,
+    });
+  } catch (error) {
     next(error);
   }
 };

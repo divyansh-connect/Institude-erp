@@ -9,7 +9,7 @@ export const getCourse = async () => {
     }
     return data.data || [];
   } catch (error) {
-    if (err.message === "Unauthorized") {
+    if (error.message === "Unauthorized") {
       throw error;
     }
     throw error;
@@ -39,7 +39,7 @@ export const stdAdmSubmitting = async (stdAdm) => {
       data: result.data,
     };
   } catch (error) {
-    if (err.message === "Unauthorized") {
+    if (error.message === "Unauthorized") {
       throw error;
     }
     return {
@@ -49,9 +49,66 @@ export const stdAdmSubmitting = async (stdAdm) => {
   }
 };
 
+export const getAllStudents = async () => {
+  try {
+    const response = await apiFetch(
+      `http://localhost:3000/api/institude/students`,
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "unable to fetch student",
+      };
+    }
+    return {
+      success: true,
+      message: data.message || "all students available",
+      data: data.data,
+    };
+  } catch (error) {
+    if (error.message === "Unauthorized") throw error;
+    return {
+      success: false,
+      message: error.message || "Network error",
+    };
+  }
+};
+
+export const payStdFee = async (payload) => {
+  try {
+    const response = await apiFetch(
+      `http://localhost:3000/api/institude/students/fee`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Fee submit failed",
+      };
+    }
+    return {
+      success: true,
+      message: data.message || "Student Fee submitted successfully",
+      data: data.data,
+    };
+  } catch (error) {
+    if (error.message === "Unauthorized") throw error;
+    return {
+      success: false,
+      message: error.message || "Network error",
+    };
+  }
+};
+
 export const institudeAnnouncement = async (payload) => {
   try {
-    const response = await apiFetch(`http://localhost:3000/api/announcement/`, {
+    const response = await apiFetch(`http://localhost:3000/api/announcement`, {
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -123,6 +180,38 @@ export const deleteInstituteAnnouncement = async (deleteId) => {
     return {
       success: true,
       message: data.message || "Deleted successfully",
+      data: data.data,
+    };
+  } catch (error) {
+    if (error.message === "Unauthorized") {
+      throw error;
+    }
+    return {
+      success: false,
+      message: error.message || "Network error",
+    };
+  }
+};
+
+export const uploadStudyMaterial = async (payload) => {
+  try {
+    const response = await apiFetch(
+      `http://localhost:3000/api/stdyMaterialFile`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Study material upload failed ",
+      };
+    }
+    return {
+      success: true,
+      message: data.message || "Study material upload successfully",
       data: data.data,
     };
   } catch (error) {
